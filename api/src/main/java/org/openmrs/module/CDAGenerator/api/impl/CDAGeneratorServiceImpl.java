@@ -13,11 +13,19 @@
  */
 package org.openmrs.module.CDAGenerator.api.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.CDAGenerator.CDAHandlers.BaseCdaTypeHandler;
 import org.openmrs.module.CDAGenerator.api.CDAGeneratorService;
 import org.openmrs.module.CDAGenerator.api.db.CDAGeneratorDAO;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 
 /**
  * It is a default implementation of {@link CDAGeneratorService}.
@@ -41,4 +49,46 @@ public class CDAGeneratorServiceImpl extends BaseOpenmrsService implements CDAGe
     public CDAGeneratorDAO getDao() {
 	    return dao;
     }
+
+	@Override
+	public List<BaseCdaTypeHandler> getAllChildHandlers() {
+		
+		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
+		
+		provider.addIncludeFilter(new AssignableTypeFilter(BaseCdaTypeHandler.class));
+		
+		List<BaseCdaTypeHandler> handlers = new ArrayList<BaseCdaTypeHandler>();
+		
+		// scan in org.openmrs.module.CDAGenerator.CDAHandlers package
+		Set<BeanDefinition> components = provider.findCandidateComponents("org.openmrs.module.CDAGenerator.CDAHandlers");
+		
+			for (BeanDefinition component : components)
+			{
+			try {
+				
+				
+				Class cls = Class.forName(component.getBeanClassName());
+			
+				BaseCdaTypeHandler p = (BaseCdaTypeHandler) cls.newInstance();
+				if(p.templateid!=null)
+				{
+				handlers.add(p);
+				}
+			
+			}
+			catch (ClassNotFoundException e) 
+			{
+				e.printStackTrace();
+			}
+			catch (InstantiationException e) 
+			{
+				e.printStackTrace();
+			}
+			catch (IllegalAccessException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return handlers;
+	}
 }

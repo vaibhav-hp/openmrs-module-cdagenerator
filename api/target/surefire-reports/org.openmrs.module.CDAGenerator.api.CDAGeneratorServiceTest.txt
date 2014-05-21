@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: org.openmrs.module.CDAGenerator.api.CDAGeneratorServiceTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.77 sec
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.491 sec
