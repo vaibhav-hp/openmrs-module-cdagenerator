@@ -13,7 +13,10 @@
  */
 package org.openmrs.module.CDAGenerator.api;
 
+import java.util.List;
+
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.CDAGenerator.CDAHandlers.BaseCdaTypeHandler;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -33,4 +36,6 @@ public interface CDAGeneratorService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+	public List<BaseCdaTypeHandler> getAllChildHandlers();
+	
 }

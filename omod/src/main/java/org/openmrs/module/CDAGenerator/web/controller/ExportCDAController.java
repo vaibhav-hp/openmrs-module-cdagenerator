@@ -16,15 +16,14 @@ package org.openmrs.module.CDAGenerator.web.controller;
 
 
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.CDAGenerator.CDAHandlers.APHPHandler;
-import org.openmrs.module.CDAGenerator.CDAHandlers.APSHandler;
 import org.openmrs.module.CDAGenerator.CDAHandlers.BaseCdaTypeHandler;
+import org.openmrs.module.CDAGenerator.api.CDAGeneratorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -43,11 +42,8 @@ public class ExportCDAController {
 	@ModelAttribute("ListCdatypes")
 	public List<BaseCdaTypeHandler> PopulateCdaTypes()
 	{
-		List<BaseCdaTypeHandler> ListCdatypes=new ArrayList<BaseCdaTypeHandler>();
-		ListCdatypes.add(new APHPHandler());
-		ListCdatypes.add(new APSHandler());
-		
-		return ListCdatypes;
+		CDAGeneratorService cdaser=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
+		return cdaser.getAllChildHandlers();
 	}
 	@RequestMapping(value = "/module/CDAGenerator/exportcda", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
