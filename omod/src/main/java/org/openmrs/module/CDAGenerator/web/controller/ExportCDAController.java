@@ -43,7 +43,7 @@ public class ExportCDAController {
 	public List<BaseCdaTypeHandler> PopulateCdaTypes()
 	{
 		CDAGeneratorService cdaser=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
-		return cdaser.getAllChildHandlers();
+		return cdaser.getAllCdaTypeChildHandlers();
 	}
 	@RequestMapping(value = "/module/CDAGenerator/exportcda", method = RequestMethod.GET)
 	public void manage(ModelMap model) {

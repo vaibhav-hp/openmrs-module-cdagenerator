@@ -36,6 +36,8 @@ public interface CDAGeneratorService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
-	public List<BaseCdaTypeHandler> getAllChildHandlers();
+		public List<BaseCdaTypeHandler> getAllCdaTypeChildHandlers();
+
+	
 	
 }

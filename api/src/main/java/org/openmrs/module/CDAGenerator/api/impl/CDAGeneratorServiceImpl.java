@@ -51,7 +51,7 @@ public class CDAGeneratorServiceImpl extends BaseOpenmrsService implements CDAGe
     }
 
 	@Override
-	public List<BaseCdaTypeHandler> getAllChildHandlers() {
+	public List<BaseCdaTypeHandler> getAllCdaTypeChildHandlers() {
 		
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
 		

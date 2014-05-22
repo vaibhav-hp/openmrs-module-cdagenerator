@@ -41,7 +41,7 @@ public class ManageCdaTypesController {
 	public List<BaseCdaTypeHandler> PopulateCdaTypes()
 	{
 		CDAGeneratorService cdaser=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
-		return cdaser.getAllChildHandlers();
+		return cdaser.getAllCdaTypeChildHandlers();
 	}
 	@RequestMapping(value = "/module/CDAGenerator/managecdatypes", method = RequestMethod.GET)
 	public void manage(ModelMap model) {

@@ -35,8 +35,10 @@ font-size:small;
 <tr>
 <th class="thStyle"><spring:message code="CDAGenerator.document.type.Fullname"/></th>
 <th class="thStyle"><spring:message code="CDAGenerator.document.type.shortname"/></th>
+<th class="thStyle"><spring:message code="CDAGenerator.document.type.formatcode"/></th>
 <th class="thStyle"><spring:message code="CDAGenerator.document.type.description"/></th>
 <th class="thStyle"><spring:message code="CDAGenerator.document.type.templateid"/></th>
+
 </tr>
 </thead>
 <tbody>
@@ -47,6 +49,9 @@ ${ls.documentFullName}
 </td>
 <td class="tdStyle" > 
 ${ls.documentShortName}
+</td>
+<td>
+${ls.formatCode }
 </td>
 <td class="tdStyle" width="35%">
 ${ls.documentDescription }
