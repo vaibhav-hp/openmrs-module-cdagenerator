@@ -45,8 +45,10 @@ font-size:small;
 <c:forEach var="ls" items="${ListCdatypes}" varStatus="status">
 <tr class='${status.index % 2 == 0 ? "oddRow" : "evenRow" }'>
 <td class="tdStyle" width="20%">
+<a href="detailPagecdatypes.form">
 ${ls.documentFullName}
 </td>
+</a>
 <td class="tdStyle" > 
 ${ls.documentShortName}
 </td>
