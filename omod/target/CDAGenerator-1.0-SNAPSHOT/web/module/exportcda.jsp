@@ -5,7 +5,7 @@
 
 
 
-<div class="boxHeader"><spring:message code="CDAGeneratorModule.export_cda" /></div>
+<div class="boxHeader"><spring:message code="CDAGenerator.export_cda" /></div>
 <div id="export_cda_box" class="box">
 
 <form id='export_Patient_cda' method="POST">
