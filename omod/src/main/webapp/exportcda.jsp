@@ -2,12 +2,18 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/localHeader.jsp"%>
-
-
-
+<style>
+.boxbg
+{
+background-color:Azure ;
+}
+</style>
+<h4>
+<spring:message code="CDAGenerator.subtitle.exportcda"/>
+</h4>
 <div class="boxHeader"><spring:message code="CDAGenerator.export_cda" /></div>
 <div id="export_cda_box" class="box">
-
+<div class="boxbg">
 <form id='export_Patient_cda' method="POST">
 <br>
 <div id="patient_id_field">
@@ -31,12 +37,12 @@
 </br>
 <br>
 <div id = "button_div">
-<input type="submit" value='Export Patient Summary' >
+<input type="submit" value='<spring:message code="CDAGenerator.document.export" />' />
 </div>
 </br>
 </form>
 </div>
-
+</div>
 
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
