@@ -27,8 +27,11 @@ font-size:small;
 }
 </style>
 <%@ include file="template/localHeader.jsp"%>
+<h4>
+<spring:message code="CDAGenerator.subtitle.managecdatypes"/>
+</h4>
 <div class="boxHeader"><spring:message code="CDAGenerator.manage_cda_types" /></div>
-<div id="export_cda_box" class="box">
+<div id="manage_cda_types_box" class="box">
 <div>
 <table id="managetypes_table" class="tableStlye">
 <thead >
@@ -45,7 +48,7 @@ font-size:small;
 <c:forEach var="ls" items="${ListCdatypes}" varStatus="status">
 <tr class='${status.index % 2 == 0 ? "oddRow" : "evenRow" }'>
 <td class="tdStyle" width="20%">
-<a href="detailPagecdatypes.form">
+<a href="detailPagecdatypes.form?templateid=${ls.templateid}">
 ${ls.documentFullName}
 </td>
 </a>

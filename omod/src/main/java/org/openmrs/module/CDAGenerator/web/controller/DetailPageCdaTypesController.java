@@ -36,24 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * The main controller.
  */
 
-@Controller
-@RequestMapping("/module/CDAGenerator/detailPagecdatypes")
-public class DetailPageCdaTypesController {
-	
-	protected final Log log = LogFactory.getLog(getClass());
-	private  List<BaseCdaTypeHandler> singleCdaType=null;
-	private  List<BaseCdaTypeHandler> CdaType=null;
-	@ModelAttribute("ListCdatypes")
-	public List<BaseCdaTypeHandler> PopulateCda(String template_id)
-	{
-		
-		CDAGeneratorService cdaser=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
-		singleCdaType=cdaser.getAllCdaTypeChildHandlers();
-		
-		return singleCdaType;
-	}
-	
-	@RequestMapping( method = RequestMethod.GET)
+	/*@RequestMapping( method = RequestMethod.GET)
 	  public String singlerecord(@RequestParam(value="templateid", required=false) String uuid, ModelMap model)
 	 {
 	    for(int i=0;i<singleCdaType.size();i++)
@@ -67,5 +50,40 @@ public class DetailPageCdaTypesController {
 	    }
 	    
 	    return "view.detailPagecdatypes";
-	  }
-}
+	  }*/
+@Controller
+public class DetailPageCdaTypesController {
+			
+			protected final Log log = LogFactory.getLog(getClass());
+			/*public List<BaseCdaTypeHandler> PopulateCda(String template_id)
+			{
+				
+				return singleCdaType;
+			}*/
+			@RequestMapping(value = "/module/CDAGenerator/detailPagecdatypes", method = RequestMethod.GET)
+			public void manage(@RequestParam(required=false, value="templateid") String id,
+		ModelMap model) {
+				
+				List<BaseCdaTypeHandler> singleCdaType=null;
+				CDAGeneratorService cdaser=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
+				singleCdaType=cdaser.getAllCdaTypeChildHandlers();
+				 for(int i=0;i<singleCdaType.size();i++)
+				    {
+				    	BaseCdaTypeHandler b=singleCdaType.get(i);
+				    	if(b.templateid.equals(id))
+				    	{
+				    				    	model.addAttribute("detailcda", b);
+				    	}
+				    }
+				
+			}
+			
+		/*	@RequestMapping(value = "/module/CDAGenerator/savecdatypes")
+			public void save(@ModelAttribute(value="detailcda")BaseCdaTypeHandler bct,ModelMap model) {
+				
+				model.addAttribute("detailcda", bct);
+				
+			}*/
+			
+		}
+
