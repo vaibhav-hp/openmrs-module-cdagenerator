@@ -28,9 +28,9 @@ font-size:small;
 </style>
 <%@ include file="template/localHeader.jsp"%>
 <h4>
-<spring:message code="CDAGenerator.subtitle.managecdatypes"/>
+<spring:message code="CDAGenerator.manage_cda_types"/>
 </h4>
-<div class="boxHeader"><spring:message code="CDAGenerator.manage_cda_types" /></div>
+<div class="boxHeader"><spring:message code="CDAGenerator.existing.managecdatypes"/></div>
 <div id="manage_cda_types_box" class="box">
 <div>
 <table id="managetypes_table" class="tableStlye">

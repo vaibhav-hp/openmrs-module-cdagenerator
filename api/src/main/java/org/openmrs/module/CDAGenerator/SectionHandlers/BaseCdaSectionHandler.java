@@ -6,9 +6,7 @@ public class BaseCdaSectionHandler {
 	public String sectionName;
 	public String sectionDescription;
 	public String templateid;
-	public BaseCdaSectionHandler()
-	{
-	}
+	
 	
 	public String getSectionName()
 	{

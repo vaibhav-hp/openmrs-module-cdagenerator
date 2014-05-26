@@ -36,30 +36,11 @@ import org.springframework.web.bind.annotation.RequestParam;
  * The main controller.
  */
 
-	/*@RequestMapping( method = RequestMethod.GET)
-	  public String singlerecord(@RequestParam(value="templateid", required=false) String uuid, ModelMap model)
-	 {
-	    for(int i=0;i<singleCdaType.size();i++)
-	    {
-	    	BaseCdaTypeHandler b=singleCdaType.get(i);
-	    	if(b.templateid.equals(uuid))
-	    	{
-	    	CdaType.add(b);
-	    	model.addAttribute("detailcda", b);
-	    	}
-	    }
-	    
-	    return "view.detailPagecdatypes";
-	  }*/
 @Controller
 public class DetailPageCdaTypesController {
 			
 			protected final Log log = LogFactory.getLog(getClass());
-			/*public List<BaseCdaTypeHandler> PopulateCda(String template_id)
-			{
-				
-				return singleCdaType;
-			}*/
+			
 			@RequestMapping(value = "/module/CDAGenerator/detailPagecdatypes", method = RequestMethod.GET)
 			public void manage(@RequestParam(required=false, value="templateid") String id,
 		ModelMap model) {
