@@ -21,6 +21,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.CDAGenerator.CDAHandlers.BaseCdaTypeHandler;
+import org.openmrs.module.CDAGenerator.SectionHandlers.BaseCdaSectionHandler;
 import org.openmrs.module.CDAGenerator.api.CDAGeneratorService;
 import org.openmrs.module.CDAGenerator.api.db.CDAGeneratorDAO;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -90,5 +91,47 @@ public class CDAGeneratorServiceImpl extends BaseOpenmrsService implements CDAGe
 			}
 		}
 		return handlers;
+	}
+
+	@Override
+	public List<BaseCdaSectionHandler> getAllCdaSectionHandlers() {
+ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
+		
+		provider.addIncludeFilter(new AssignableTypeFilter(BaseCdaSectionHandler.class));
+		
+		List<BaseCdaSectionHandler> sectionHandlers = new ArrayList<BaseCdaSectionHandler>();
+		
+		// scan in org.openmrs.module.CDAGenerator.Sectionhandlers package
+				Set<BeanDefinition> components = provider.findCandidateComponents("org.openmrs.module.CDAGenerator.SectionHandlers");
+				
+					for (BeanDefinition component : components)
+					{
+					try {
+						
+						
+						Class cls = Class.forName(component.getBeanClassName());
+					
+						BaseCdaSectionHandler p = (BaseCdaSectionHandler) cls.newInstance();
+						if(p.templateid!=null)
+						{
+						sectionHandlers.add(p);
+						}
+						
+					
+					}
+					catch (ClassNotFoundException e) 
+					{
+						e.printStackTrace();
+					}
+					catch (InstantiationException e) 
+					{
+						e.printStackTrace();
+					}
+					catch (IllegalAccessException e) 
+					{
+						e.printStackTrace();
+					}
+				}
+				return sectionHandlers;
 	}
 }

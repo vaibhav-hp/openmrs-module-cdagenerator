@@ -14,11 +14,16 @@
 
 package org.openmrs.module.CDAGenerator.web.controller;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.CDAGenerator.SectionHandlers.BaseCdaSectionHandler;
+import org.openmrs.module.CDAGenerator.api.CDAGeneratorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -29,10 +34,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class ConfigureSectionsController {
 	
+	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(value = "/module/CDAGenerator/configureSections", method = RequestMethod.GET)
-	public void manage(ModelMap model) {
-		model.addAttribute("user", Context.getAuthenticatedUser());
+	public void manage(ModelMap model) 
+	{
+		List<BaseCdaSectionHandler> ListCdaSections=null; 
+		CDAGeneratorService cdaser=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
+		ListCdaSections=cdaser.getAllCdaSectionHandlers();
+		model.addAttribute("allCdaSections", ListCdaSections);
+	
 	}
 }

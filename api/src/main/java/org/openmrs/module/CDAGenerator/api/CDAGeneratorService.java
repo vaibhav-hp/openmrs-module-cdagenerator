@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.CDAGenerator.CDAHandlers.BaseCdaTypeHandler;
+import org.openmrs.module.CDAGenerator.SectionHandlers.BaseCdaSectionHandler;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -37,7 +38,7 @@ public interface CDAGeneratorService extends OpenmrsService {
 	 * 
 	 */
 		public List<BaseCdaTypeHandler> getAllCdaTypeChildHandlers();
-
+        public List<BaseCdaSectionHandler> getAllCdaSectionHandlers();
 	
 	
 }
