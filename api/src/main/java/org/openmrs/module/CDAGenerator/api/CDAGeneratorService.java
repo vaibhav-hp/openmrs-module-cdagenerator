@@ -15,6 +15,8 @@ package org.openmrs.module.CDAGenerator.api;
 
 import java.util.List;
 
+import org.openhealthtools.mdht.uml.cda.ClinicalDocument;
+import org.openmrs.Patient;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.CDAGenerator.CDAHandlers.BaseCdaTypeHandler;
 import org.openmrs.module.CDAGenerator.SectionHandlers.BaseCdaSectionHandler;
@@ -39,6 +41,8 @@ public interface CDAGeneratorService extends OpenmrsService {
 	 */
 		public List<BaseCdaTypeHandler> getAllCdaTypeChildHandlers();
         public List<BaseCdaSectionHandler> getAllCdaSectionHandlers();
+        public ClinicalDocument produceCDA(Patient p,BaseCdaTypeHandler bh);
+        
 	
 	
 }

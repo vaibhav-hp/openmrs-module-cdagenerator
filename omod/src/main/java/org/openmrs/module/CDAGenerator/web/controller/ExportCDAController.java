@@ -64,75 +64,18 @@ public class ExportCDAController {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public void manage(@RequestParam(value="patientId",required=true)org.openmrs.Patient p,HttpServletResponse response) {
-		ClinicalDocument doc = CDAFactory.eINSTANCE.createClinicalDocument();
-
-		InfrastructureRootTypeId typeId = CDAFactory.eINSTANCE.createInfrastructureRootTypeId();
-		typeId.setExtension("POCD_HD000040");
+	public void manage(@RequestParam(value="patientId",required=true)org.openmrs.Patient p,BaseCdaTypeHandler bcth,HttpServletResponse response) {
 		
-		doc.setTypeId(typeId);
-
-		II id = DatatypesFactory.eINSTANCE.createII("2.16.840.1.113883.19.4", "c266");
-		doc.setId(id);
-
-		II templateId = DatatypesFactory.eINSTANCE.createII("2.16.840.1.113883.3.27.1776");
-		doc.getTemplateIds().add(templateId);
-
-		CE code = DatatypesFactory.eINSTANCE.createCE("11488-4", "2.16.840.1.113883.6.1", "LOINC", "Consultation note");
-		doc.setCode(code);
-
-		ST title = DatatypesFactory.eINSTANCE.createST("");
-		doc.setTitle(title);
-
-		TS effectiveTime = DatatypesFactory.eINSTANCE.createTS("20000407");
-		doc.setEffectiveTime(effectiveTime);
-
-		CE confidentialityCode = DatatypesFactory.eINSTANCE.createCE("N", "2.16.840.1.113883.5.25");
-		doc.setConfidentialityCode(confidentialityCode);
-		RecordTarget recordTarget = CDAFactory.eINSTANCE.createRecordTarget();
-		doc.getRecordTargets().add(recordTarget);
-
-		PatientRole patientRole = CDAFactory.eINSTANCE.createPatientRole();
-		recordTarget.setPatientRole(patientRole);
-
-		org.openhealthtools.mdht.uml.cda.Patient patient = CDAFactory.eINSTANCE.createPatient();
-		patientRole.setPatient(patient);
-
-		PN name = DatatypesFactory.eINSTANCE.createPN();
-		name.addGiven("Henry").addFamily("Levin").addSuffix("the 7th");
-		patient.getNames().add(name);
-
-		CE administrativeGenderCode = DatatypesFactory.eINSTANCE.createCE("M", "2.16.840.1.113883.5.1");
-		patient.setAdministrativeGenderCode(administrativeGenderCode);
-
-		TS birthTime = DatatypesFactory.eINSTANCE.createTS("19320924");
-		patient.setBirthTime(birthTime);
-
-		Organization providerOrganization = CDAFactory.eINSTANCE.createOrganization();
-		providerOrganization.getIds().add(DatatypesFactory.eINSTANCE.createII("2.16.840.1.113883.19.5"));
-		patientRole.setProviderOrganization(providerOrganization);
-
-		Author author = CDAFactory.eINSTANCE.createAuthor();
-		author.setTime(DatatypesFactory.eINSTANCE.createTS("2000040714"));
-		doc.getAuthors().add(author);
-
-		AssignedAuthor assignedAuthor = CDAFactory.eINSTANCE.createAssignedAuthor();
-		assignedAuthor.getIds().add(DatatypesFactory.eINSTANCE.createII("2.16.840.1.113883.19.5", "KP00017"));
-		author.setAssignedAuthor(assignedAuthor);
-
-		Person assignedPerson = CDAFactory.eINSTANCE.createPerson();
-		assignedAuthor.setAssignedPerson(assignedPerson);
-
-		name = DatatypesFactory.eINSTANCE.createPN();
-		name.addGiven("Bob").addFamily("Dolin").addSuffix("MD");
-		assignedPerson.getNames().add(name);
-
-		 response.setHeader( "Content-Disposition", "attachment;filename=sampleTest.xml");	
+		ClinicalDocument cda=null;
+	 CDAGeneratorService cdaservice=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
+	 
+	 cda=cdaservice.produceCDA(p, bcth);
+		 response.setHeader( "Content-Disposition", "attachment;filename="+p.getGivenName()+""+p.getPatientId()+"sampleTest.xml");	
 		   try {
 			  
 			 StringWriter r = new StringWriter();
 			 
-			  CDAUtil.save(doc, r);
+			  CDAUtil.save(cda, r);
 			  String ccdDoc = r.toString();
 			  ccdDoc = ccdDoc.replaceAll("&lt;", "<");
 			  ccdDoc = ccdDoc.replaceAll("&quot;", "\"");

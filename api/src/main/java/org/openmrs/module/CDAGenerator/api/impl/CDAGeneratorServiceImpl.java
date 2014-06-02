@@ -13,10 +13,36 @@
  */
 package org.openmrs.module.CDAGenerator.api.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.openhealthtools.mdht.uml.cda.AssignedAuthor;
+import org.openhealthtools.mdht.uml.cda.AssignedCustodian;
+import org.openhealthtools.mdht.uml.cda.Author;
+import org.openhealthtools.mdht.uml.cda.CDAFactory;
+import org.openhealthtools.mdht.uml.cda.ClinicalDocument;
+import org.openhealthtools.mdht.uml.cda.Custodian;
+import org.openhealthtools.mdht.uml.cda.CustodianOrganization;
+import org.openhealthtools.mdht.uml.cda.InfrastructureRootTypeId;
+import org.openhealthtools.mdht.uml.cda.Organization;
+import org.openhealthtools.mdht.uml.cda.PatientRole;
+import org.openhealthtools.mdht.uml.cda.Person;
+import org.openhealthtools.mdht.uml.hl7.datatypes.AD;
+import org.openhealthtools.mdht.uml.hl7.datatypes.CE;
+import org.openhealthtools.mdht.uml.hl7.datatypes.CS;
+import org.openhealthtools.mdht.uml.hl7.datatypes.DatatypesFactory;
+import org.openhealthtools.mdht.uml.hl7.datatypes.II;
+import org.openhealthtools.mdht.uml.hl7.datatypes.ON;
+import org.openhealthtools.mdht.uml.hl7.datatypes.PN;
+import org.openhealthtools.mdht.uml.hl7.datatypes.ST;
+import org.openhealthtools.mdht.uml.hl7.datatypes.TEL;
+import org.openhealthtools.mdht.uml.hl7.datatypes.TS;
+import org.openhealthtools.mdht.uml.hl7.vocab.NullFlavor;
+import org.openmrs.Patient;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -134,4 +160,207 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 				}
 				return sectionHandlers;
 	}
+
+	@Override
+	public ClinicalDocument produceCDA(Patient p, BaseCdaTypeHandler bh) 
+	{
+		ClinicalDocument doc = CDAFactory.eINSTANCE.createClinicalDocument();
+		doc=buildHeader(doc, p, bh);
+		
+		return doc;
+	}
+	public ClinicalDocument buildHeader(ClinicalDocument doc,Patient p,BaseCdaTypeHandler bcth)
+	{
+	
+		
+		
+		
+		InfrastructureRootTypeId typeId = CDAFactory.eINSTANCE.createInfrastructureRootTypeId();
+		typeId.setExtension("POCD_HD000040");
+		typeId.setRoot("2.16.840.1.113883.1.3");
+		doc.setTypeId(typeId);
+		
+		doc.getTemplateIds().clear();
+		doc.getTemplateIds().add(buildTemplateID("2.16.840.1.113883.10","IMPL_CDAR2_LEVEL1",""));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.1","",""));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.2","",""));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.1","",""));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.4","",""));
+		
+		doc.setId(buildID("apHandP", "2.16.840.1.113883.19.4"));
+		
+		doc.setCode(buildCodeCE("34117-2","2.16.840.1.113883.6.1","","LOINC"));
+		
+		doc.setTitle(buildST("Sample Antepartum History and Physical Document"));
+		
+		CE confidentialityCode = DatatypesFactory.eINSTANCE.createCE();
+		confidentialityCode.setCode("N");
+		confidentialityCode.setCodeSystem("2.16.840.1.113883.5.25");
+		doc.setConfidentialityCode(confidentialityCode);
+		
+		CS languageCode = DatatypesFactory.eINSTANCE.createCS();
+		languageCode.setCode("en-US");
+		doc.setLanguageCode(languageCode);
+
+		PatientRole patientRole = CDAFactory.eINSTANCE.createPatientRole();
+		patientRole.getIds().add(buildID("996-756-495", "2.16.840.1.113883.19.5"));
+		
+		
+		
+		TEL patientTelecom = DatatypesFactory.eINSTANCE.createTEL();
+		patientTelecom.setNullFlavor(NullFlavor.UNK);
+		patientRole.getTelecoms().add(patientTelecom);
+		org.openhealthtools.mdht.uml.cda.Patient cdapatient = CDAFactory.eINSTANCE.createPatient();
+		
+		patientRole.setPatient(cdapatient);
+		PN name = DatatypesFactory.eINSTANCE.createPN();
+		name.addGiven("Henry");
+		name.addFamily("Levin");
+		name.addSuffix("the 7th");
+		cdapatient.getNames().add(name);
+
+		
+		CE gender = DatatypesFactory.eINSTANCE.createCE();
+		gender.setCode("M");
+		gender.setCodeSystem("2.16.840.1.113883.5.1");
+		cdapatient.setAdministrativeGenderCode(gender);
+		
+		AD patientAddress = DatatypesFactory.eINSTANCE.createAD();
+				patientRole.getAddrs().add(patientAddress);
+		
+		
+		TS dateOfBirth = DatatypesFactory.eINSTANCE.createTS();
+		SimpleDateFormat s1 = new SimpleDateFormat("yyyyMMdd");
+		Date dobs=null;
+		try {
+			dobs = s1.parse("20140601");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String dob = s1.format(dobs);
+		dateOfBirth.setValue(dob);
+		cdapatient.setBirthTime(dateOfBirth); 
+		
+		
+		CE codes = DatatypesFactory.eINSTANCE.createCE();
+		codes.setCode("S");
+		cdapatient.setMaritalStatusCode(codes);
+		
+		CE codes1 = DatatypesFactory.eINSTANCE.createCE();
+		codes1.setCode("AAA");				
+		cdapatient.setEthnicGroupCode(codes1);
+		
+		Organization providerOrganization = CDAFactory.eINSTANCE.createOrganization();
+		AD providerOrganizationAddress = DatatypesFactory.eINSTANCE.createAD();
+		providerOrganization.getIds().add(buildID("2.16.840.1.113883.19.5",""));
+		providerOrganization.getAddrs().add(providerOrganizationAddress);
+
+		ON organizationName = DatatypesFactory.eINSTANCE.createON();
+		organizationName.addText("Good Health Clinic");
+		providerOrganization.getNames().add(organizationName);
+
+		TEL providerOrganizationTelecon = DatatypesFactory.eINSTANCE.createTEL();
+		providerOrganizationTelecon.setNullFlavor(NullFlavor.UNK);
+		providerOrganization.getTelecoms().add(providerOrganizationTelecon);
+
+		patientRole.setProviderOrganization(providerOrganization);
+
+			
+		doc.addPatientRole(patientRole);
+
+		
+		
+		Author author = CDAFactory.eINSTANCE.createAuthor();
+		//in this case we consider the assigned author is the one generating the document i.e the logged in user exporting the document
+		AssignedAuthor assignedAuthor = CDAFactory.eINSTANCE.createAssignedAuthor();
+		II authorId = DatatypesFactory.eINSTANCE.createII();
+		authorId.setRoot("20cf14fb-b65c-4c8c-a54d-b0cca834c18c");
+		assignedAuthor.getIds().add(authorId);
+		
+			
+
+		Person assignedPerson = CDAFactory.eINSTANCE.createPerson();
+		PN assignedPersonName = DatatypesFactory.eINSTANCE.createPN();
+		assignedPersonName.addPrefix("Dr.");
+		assignedPersonName.addGiven("Robert");
+		assignedPersonName.addFamily("Dolin");
+		assignedPerson.getNames().add(assignedPersonName);
+
+		assignedAuthor.setAssignedPerson(assignedPerson);
+		Organization representedOrganization = CDAFactory.eINSTANCE.createOrganization();
+		AD representedOrganizationAddress = DatatypesFactory.eINSTANCE.createAD();
+		
+		
+		representedOrganization.getIds().add(buildID("2.16.840.1.113883.19.5",""));
+		representedOrganization.getNames().add(organizationName);
+	
+		
+		representedOrganization.getAddrs().add(representedOrganizationAddress);
+		representedOrganization.getTelecoms().add(providerOrganizationTelecon);
+		assignedAuthor.setRepresentedOrganization(representedOrganization);
+		assignedAuthor.setRepresentedOrganization(representedOrganization);
+		
+		author.setAssignedAuthor(assignedAuthor);
+		doc.getAuthors().add(author);
+		
+		
+		Custodian custodian = CDAFactory.eINSTANCE.createCustodian();
+		AssignedCustodian assignedCustodian = CDAFactory.eINSTANCE.createAssignedCustodian();
+		CustodianOrganization custodianOrganization = CDAFactory.eINSTANCE.createCustodianOrganization();
+		II custodianId = DatatypesFactory.eINSTANCE.createII();
+		custodianOrganization.getIds().add(custodianId);
+		
+		custodianOrganization.setAddr(providerOrganizationAddress);
+		custodianOrganization.setName(organizationName);
+		custodianOrganization.setTelecom(providerOrganizationTelecon);
+		assignedCustodian.setRepresentedCustodianOrganization(custodianOrganization);
+		custodian.setAssignedCustodian(assignedCustodian);
+				doc.setCustodian(custodian);
+
+				
+	return doc;
+
+		
+			
+		
+	}
+	public  static II buildTemplateID(String root , String extension ,String assigningAuthorityName)
+	{
+
+		II templateID = DatatypesFactory.eINSTANCE.createII();
+		templateID.setRoot(root);
+		templateID.setExtension(extension);
+		templateID.setAssigningAuthorityName(assigningAuthorityName);
+		return templateID;
+
+	}
+	public ST buildST(String title)
+	{
+		ST displayTitle = DatatypesFactory.eINSTANCE.createST();
+		displayTitle.addText(title);
+		return displayTitle;
+
+	}
+
+	public II buildID(String root , String extension)
+	{
+		II id = DatatypesFactory.eINSTANCE.createII();
+		//same as the implementation id
+		id.setRoot(root);
+		id.setExtension(extension);
+		return id;
+
+	}
+	public CE buildCodeCE(String code , String codeSystem, String displayString, String codeSystemName)
+	{
+		CE e = DatatypesFactory.eINSTANCE.createCE();
+		e.setCode(code);
+		e.setCodeSystem(codeSystem);
+		e.setDisplayName(displayString);
+		e.setCodeSystemName(codeSystemName);
+		return e;
+
+	}
+
 }
