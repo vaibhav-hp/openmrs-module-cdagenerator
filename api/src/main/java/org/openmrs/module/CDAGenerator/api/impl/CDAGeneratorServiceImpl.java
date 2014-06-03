@@ -43,6 +43,7 @@ import org.openhealthtools.mdht.uml.hl7.datatypes.TEL;
 import org.openhealthtools.mdht.uml.hl7.datatypes.TS;
 import org.openhealthtools.mdht.uml.hl7.vocab.NullFlavor;
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -165,33 +166,116 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 	public ClinicalDocument produceCDA(Patient p, BaseCdaTypeHandler bh) 
 	{
 		ClinicalDocument doc = CDAFactory.eINSTANCE.createClinicalDocument();
-		doc=buildHeader(doc, p, bh);
+	      
+		doc=buildHeader(doc);
 		
 		return doc;
 	}
-	public ClinicalDocument buildHeader(ClinicalDocument doc,Patient p,BaseCdaTypeHandler bcth)
+	public  static II buildTemplateID(String root , String extension ,String assigningAuthorityName)
 	{
+
+		
+
+			II templateID = DatatypesFactory.eINSTANCE.createII();
+			if(root!=null)
+			{
+			templateID.setRoot(root);
+			}
+			if(extension!=null)
+			{
+			templateID.setExtension(extension);
+			}
+			if(assigningAuthorityName!=null)
+			{
+			templateID.setAssigningAuthorityName(assigningAuthorityName);
+			}
+			
+			return templateID;
+
+		
+
+	}
+	public ST buildST(String title)
+	{
+		ST displayTitle = DatatypesFactory.eINSTANCE.createST();
+		displayTitle.addText(title);
+		return displayTitle;
+
+	}
+
+	public II buildID(String root , String extension)
+	{
+		II id = DatatypesFactory.eINSTANCE.createII();
+		//same as the implementation id
+		if(root!=null)
+		{
+		id.setRoot(root);
+		}
+		if(extension!=null)
+		{
+		id.setExtension(extension);
+		}
+		return id;
+
+	}
+	public CE buildCodeCE(String code , String codeSystem, String displayString, String codeSystemName)
+	{
+		CE e = DatatypesFactory.eINSTANCE.createCE();
+		if(code!=null)
+		{
+		e.setCode(code);
+		}
+		if(codeSystem!=null)
+		{
+		e.setCodeSystem(codeSystem);
+		}
+		if(displayString!=null)
+		{
+		e.setDisplayName(displayString);
+		}
+		if(displayString!=null)
+		{
+		e.setCodeSystemName(codeSystemName);
+		}
+		return e;
+
+	}
+	public  TS buildEffectiveTime(Date d)
+	{
+		TS effectiveTime = DatatypesFactory.eINSTANCE.createTS();
+		SimpleDateFormat s = new SimpleDateFormat("yyyyMMddhhmmss");
+		
+		String creationDate = s.format(d);
 	
+		effectiveTime.setValue(creationDate);
 		
-		
-		
+		return effectiveTime;
+	}
+	
+	
+	public ClinicalDocument buildHeader(ClinicalDocument doc)
+	{
+				
 		InfrastructureRootTypeId typeId = CDAFactory.eINSTANCE.createInfrastructureRootTypeId();
 		typeId.setExtension("POCD_HD000040");
 		typeId.setRoot("2.16.840.1.113883.1.3");
 		doc.setTypeId(typeId);
 		
 		doc.getTemplateIds().clear();
-		doc.getTemplateIds().add(buildTemplateID("2.16.840.1.113883.10","IMPL_CDAR2_LEVEL1",""));
-		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.1","",""));
-		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.2","",""));
-		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.1","",""));
-		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.4","",""));
+		doc.getTemplateIds().add(buildTemplateID("2.16.840.1.113883.10","IMPL_CDAR2_LEVEL1",null));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.1",null,null));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.2",null,null));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.1",null,null));
+		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.4",null,null));
 		
 		doc.setId(buildID("apHandP", "2.16.840.1.113883.19.4"));
 		
-		doc.setCode(buildCodeCE("34117-2","2.16.840.1.113883.6.1","","LOINC"));
+		doc.setCode(buildCodeCE("34117-2","2.16.840.1.113883.6.1",null,"LOINC"));
 		
 		doc.setTitle(buildST("Sample Antepartum History and Physical Document"));
+		
+		Date d = new Date();
+		doc.setEffectiveTime(buildEffectiveTime(d));
 		
 		CE confidentialityCode = DatatypesFactory.eINSTANCE.createCE();
 		confidentialityCode.setCode("N");
@@ -203,7 +287,7 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		doc.setLanguageCode(languageCode);
 
 		PatientRole patientRole = CDAFactory.eINSTANCE.createPatientRole();
-		patientRole.getIds().add(buildID("996-756-495", "2.16.840.1.113883.19.5"));
+		patientRole.getIds().add(buildID("2.16.840.1.113883.19.5","99612-756-495"));
 		
 		
 		
@@ -253,7 +337,8 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		
 		Organization providerOrganization = CDAFactory.eINSTANCE.createOrganization();
 		AD providerOrganizationAddress = DatatypesFactory.eINSTANCE.createAD();
-		providerOrganization.getIds().add(buildID("2.16.840.1.113883.19.5",""));
+		
+		providerOrganization.getIds().add(buildID("2.16.840.1.113883.19.5",null));
 		providerOrganization.getAddrs().add(providerOrganizationAddress);
 
 		ON organizationName = DatatypesFactory.eINSTANCE.createON();
@@ -272,6 +357,7 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		
 		
 		Author author = CDAFactory.eINSTANCE.createAuthor();
+		author.setTime(buildEffectiveTime(new Date()));
 		//in this case we consider the assigned author is the one generating the document i.e the logged in user exporting the document
 		AssignedAuthor assignedAuthor = CDAFactory.eINSTANCE.createAssignedAuthor();
 		II authorId = DatatypesFactory.eINSTANCE.createII();
@@ -292,7 +378,7 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		AD representedOrganizationAddress = DatatypesFactory.eINSTANCE.createAD();
 		
 		
-		representedOrganization.getIds().add(buildID("2.16.840.1.113883.19.5",""));
+		representedOrganization.getIds().add(buildID("2.16.840.1.113883.19.5",null));
 		representedOrganization.getNames().add(organizationName);
 	
 		
@@ -309,6 +395,7 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		AssignedCustodian assignedCustodian = CDAFactory.eINSTANCE.createAssignedCustodian();
 		CustodianOrganization custodianOrganization = CDAFactory.eINSTANCE.createCustodianOrganization();
 		II custodianId = DatatypesFactory.eINSTANCE.createII();
+		custodianId.setRoot("2.16.840.1.113883.19.5");
 		custodianOrganization.getIds().add(custodianId);
 		
 		custodianOrganization.setAddr(providerOrganizationAddress);
@@ -320,47 +407,6 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 
 				
 	return doc;
-
-		
-			
-		
 	}
-	public  static II buildTemplateID(String root , String extension ,String assigningAuthorityName)
-	{
-
-		II templateID = DatatypesFactory.eINSTANCE.createII();
-		templateID.setRoot(root);
-		templateID.setExtension(extension);
-		templateID.setAssigningAuthorityName(assigningAuthorityName);
-		return templateID;
-
-	}
-	public ST buildST(String title)
-	{
-		ST displayTitle = DatatypesFactory.eINSTANCE.createST();
-		displayTitle.addText(title);
-		return displayTitle;
-
-	}
-
-	public II buildID(String root , String extension)
-	{
-		II id = DatatypesFactory.eINSTANCE.createII();
-		//same as the implementation id
-		id.setRoot(root);
-		id.setExtension(extension);
-		return id;
-
-	}
-	public CE buildCodeCE(String code , String codeSystem, String displayString, String codeSystemName)
-	{
-		CE e = DatatypesFactory.eINSTANCE.createCE();
-		e.setCode(code);
-		e.setCodeSystem(codeSystem);
-		e.setDisplayName(displayString);
-		e.setCodeSystemName(codeSystemName);
-		return e;
-
-	}
-
+	
 }
