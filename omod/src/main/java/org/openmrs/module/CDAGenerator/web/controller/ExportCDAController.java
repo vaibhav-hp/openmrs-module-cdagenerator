@@ -52,6 +52,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.support.RequestContext;
 
 /**
  * The main controller.
@@ -64,13 +65,21 @@ public class ExportCDAController {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public void manage(@RequestParam(value="patientId",required=true)org.openmrs.Patient p,BaseCdaTypeHandler bcth,HttpServletResponse response) {
+	public void manage(@RequestParam(value="patientId",required=true)org.openmrs.Patient p,@RequestParam(value="ChildCDAHandler",required=false)String ccth, BaseCdaTypeHandler bcth,HttpServletResponse response) {
 		
 		ClinicalDocument cda=null;
+		String []arr=ccth.split(",");
+		System.out.println("----->"+arr[0]);
+		System.out.println("----->"+arr[1]);
+		System.out.println("----->"+arr[2]);
+       
 	 CDAGeneratorService cdaservice=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
 	 
-	 cda=cdaservice.produceCDA(p, bcth);
-		 response.setHeader( "Content-Disposition", "attachment;filename="+p.getGivenName()+""+p.getPatientId()+"sampleTest.xml");	
+	
+	 bcth.setDocumentFullName(arr[0]);
+	 
+	// cda=cdaservice.produceCDA(p, bcth);
+		 response.setHeader( "Content-Disposition", "attachment;filename="+p.getGivenName()+"sampleTest.xml");	
 		   try {
 			  
 			 StringWriter r = new StringWriter();

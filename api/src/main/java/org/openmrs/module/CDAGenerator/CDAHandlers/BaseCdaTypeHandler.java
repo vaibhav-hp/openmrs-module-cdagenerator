@@ -64,4 +64,8 @@ public class BaseCdaTypeHandler
 	{
 		this.formatCode=code;
 	}
+	public String toString() 
+    {
+       return documentFullName+","+documentShortName+","+documentDescription+","+templateid+","+formatCode;
+    }
 }

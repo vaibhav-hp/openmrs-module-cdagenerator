@@ -8,6 +8,19 @@
 background-color:Azure ;
 }
 </style>
+<script>
+function getType()
+{
+	var x=document.getElementById("cda_profile_type").value;
+	alert('----->'+x);
+	
+	
+	document.getElementById("ChildCDAHandler").value=x;
+   
+   
+	
+}
+</script>
 <h4>
 <spring:message code="CDAGenerator.subtitle.exportcda"/>
 </h4>
@@ -24,15 +37,20 @@ background-color:Azure ;
 <br>
 <div id="cda_type_dropdown">
 <spring:message code="CDAGenerator.document.cda.type"/>
-<select id="cda_profile_type" name="cda_profile_type">
+<select id="cda_profile_type" name="cda_profile_type" onchange="getType()">
 <option value="" id=""> <spring:message code="CDAGenerator.choose.document"/> </option>
 <c:forEach var="ls" items="${ListCdatypes}">
-			<option value="${ls.documentFullName}">${ls.documentFullName}(${ls.documentShortName})</option>
+			<option value="${ls}">${ls.documentFullName}(${ls.documentShortName})</option>
+			
+			<c:set var="obj" scope="session" value="${}"/>
 		</c:forEach>
 </select>
-
-		
-
+<!--  <input type="hidden" id="documentFullName" name="documentFullName"/>	
+ <input type="hidden" id="documentShortName" name="documentShortName"/> 
+<input type="hidden" id="documentDescription" name="documentDescription"/>
+<input type="hidden" id="templateid" name="templateid"/>
+<input type="hidden" id="formatCode" name="formatCode"/>	-->
+<input type="hidden" id="ChildCDAHandler" name="ChildCDAHandler"/>
 </div>
 </br>
 <br>

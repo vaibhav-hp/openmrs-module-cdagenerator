@@ -31,6 +31,7 @@ import org.openhealthtools.mdht.uml.cda.InfrastructureRootTypeId;
 import org.openhealthtools.mdht.uml.cda.Organization;
 import org.openhealthtools.mdht.uml.cda.PatientRole;
 import org.openhealthtools.mdht.uml.cda.Person;
+import org.openhealthtools.mdht.uml.cda.Section;
 import org.openhealthtools.mdht.uml.hl7.datatypes.AD;
 import org.openhealthtools.mdht.uml.hl7.datatypes.CE;
 import org.openhealthtools.mdht.uml.hl7.datatypes.CS;
@@ -167,7 +168,7 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 	{
 		ClinicalDocument doc = CDAFactory.eINSTANCE.createClinicalDocument();
 	      
-		doc=buildHeader(doc);
+		doc=buildHeader(doc,bh);
 		
 		return doc;
 	}
@@ -252,12 +253,18 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		return effectiveTime;
 	}
 	
-	
-	public ClinicalDocument buildHeader(ClinicalDocument doc)
+	public  ClinicalDocument buildSection(ClinicalDocument cd)
+	{
+		Section section=CDAFactory.eINSTANCE.createSection();
+		section.setId(buildID("2.2.2.2.22222.2.2",null));
+		cd.addSection(section);
+		return cd;
+	}
+	public ClinicalDocument buildHeader(ClinicalDocument doc,BaseCdaTypeHandler bh)
 	{
 				
 		InfrastructureRootTypeId typeId = CDAFactory.eINSTANCE.createInfrastructureRootTypeId();
-		typeId.setExtension("POCD_HD000040");
+		typeId.setExtension("POCD_HD000040");/*fixed*/
 		typeId.setRoot("2.16.840.1.113883.1.3");
 		doc.setTypeId(typeId);
 		
@@ -268,26 +275,26 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.1",null,null));
 		doc.getTemplateIds().add(buildTemplateID("1.3.6.1.4.1.19376.1.5.3.1.1.16.1.4",null,null));
 		
-		doc.setId(buildID("apHandP", "2.16.840.1.113883.19.4"));
+		doc.setId(buildID("apHandP", "2.16.840.1.113883.19.4"));//need to generate dynamically
 		
-		doc.setCode(buildCodeCE("34117-2","2.16.840.1.113883.6.1",null,"LOINC"));
+		doc.setCode(buildCodeCE("34117-2","2.16.840.1.113883.6.1",null,"LOINC"));//need to generate dynamically
 		
-		doc.setTitle(buildST("Sample Antepartum History and Physical Document"));
+		doc.setTitle(buildST(bh.documentFullName));//need to generate dynamically
 		
 		Date d = new Date();
 		doc.setEffectiveTime(buildEffectiveTime(d));
 		
 		CE confidentialityCode = DatatypesFactory.eINSTANCE.createCE();
-		confidentialityCode.setCode("N");
+		confidentialityCode.setCode("N");/*fixed*/
 		confidentialityCode.setCodeSystem("2.16.840.1.113883.5.25");
 		doc.setConfidentialityCode(confidentialityCode);
 		
 		CS languageCode = DatatypesFactory.eINSTANCE.createCS();
-		languageCode.setCode("en-US");
+		languageCode.setCode("en-US");/*fixed*/
 		doc.setLanguageCode(languageCode);
 
 		PatientRole patientRole = CDAFactory.eINSTANCE.createPatientRole();
-		patientRole.getIds().add(buildID("2.16.840.1.113883.19.5","99612-756-495"));
+		patientRole.getIds().add(buildID("2.16.840.1.113883.19.5","99612-756-495"));//get dynamically from patient service
 		
 		
 		
@@ -298,15 +305,15 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		
 		patientRole.setPatient(cdapatient);
 		PN name = DatatypesFactory.eINSTANCE.createPN();
-		name.addGiven("Henry");
+		name.addGiven("Henry");/* dynamically get patient name*/
 		name.addFamily("Levin");
 		name.addSuffix("the 7th");
 		cdapatient.getNames().add(name);
 
 		
 		CE gender = DatatypesFactory.eINSTANCE.createCE();
-		gender.setCode("M");
-		gender.setCodeSystem("2.16.840.1.113883.5.1");
+		gender.setCode("M");//dynamic
+		gender.setCodeSystem("2.16.840.1.113883.5.1");//fixed
 		cdapatient.setAdministrativeGenderCode(gender);
 		
 		AD patientAddress = DatatypesFactory.eINSTANCE.createAD();
@@ -403,9 +410,9 @@ ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCand
 		custodianOrganization.setTelecom(providerOrganizationTelecon);
 		assignedCustodian.setRepresentedCustodianOrganization(custodianOrganization);
 		custodian.setAssignedCustodian(assignedCustodian);
-				doc.setCustodian(custodian);
+		doc.setCustodian(custodian);
 
-				
+		doc=buildSection(doc);		
 	return doc;
 	}
 	
