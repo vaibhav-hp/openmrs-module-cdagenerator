@@ -43,6 +43,7 @@ import org.openhealthtools.mdht.uml.hl7.datatypes.II;
 import org.openhealthtools.mdht.uml.hl7.datatypes.PN;
 import org.openhealthtools.mdht.uml.hl7.datatypes.ST;
 import org.openhealthtools.mdht.uml.hl7.datatypes.TS;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.CDAGenerator.CDAHandlers.BaseCdaTypeHandler;
 import org.openmrs.module.CDAGenerator.api.CDAGeneratorService;
@@ -68,6 +69,7 @@ public class ExportCDAController {
 	public void manage(@RequestParam(value="patientId",required=true)org.openmrs.Patient p,@RequestParam(value="ChildCDAHandler",required=false)String ccth, BaseCdaTypeHandler bcth,HttpServletResponse response) {
 		
 		ClinicalDocument cda=null;
+		
 		String []arr=ccth.split(",");
 		System.out.println("----->"+arr[0]);
 		System.out.println("----->"+arr[1]);
@@ -75,10 +77,14 @@ public class ExportCDAController {
        
 	 CDAGeneratorService cdaservice=(CDAGeneratorService)Context.getService(CDAGeneratorService.class);
 	 
-	
-	 bcth.setDocumentFullName(arr[0]);
 	 
-	// cda=cdaservice.produceCDA(p, bcth);
+	 bcth.setDocumentFullName(arr[0]);
+	 bcth.setDocumentShortName(arr[1]);
+	 bcth.setDocumentDescription(arr[2]);
+	 bcth.setTemplateid(arr[3]);
+	 bcth.setFormatCode(arr[4]);
+	 
+	 cda=cdaservice.produceCDA(p, bcth);
 		 response.setHeader( "Content-Disposition", "attachment;filename="+p.getGivenName()+"sampleTest.xml");	
 		   try {
 			  
@@ -89,17 +95,21 @@ public class ExportCDAController {
 			  ccdDoc = ccdDoc.replaceAll("&lt;", "<");
 			  ccdDoc = ccdDoc.replaceAll("&quot;", "\"");
 			  byte[] res = ccdDoc.getBytes(Charset.forName("UTF-8"));
+			  response.setContentType("text/xml");
 			  response.setCharacterEncoding("UTF-8");
 			  response.getOutputStream().write(res);
 			   response.flushBuffer();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		      } 
+		   catch (IOException e) 
+		   {
+			
 			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		   } 
+		   catch (Exception e)
+		   {
 			e.printStackTrace();
-		}
-			}
+		   }
+	}
 	@RequestMapping( method = RequestMethod.GET)
 	public void PopulateCdaTypes(@RequestParam(value="patientId",required=false)Patient patient,ModelMap model) 
 	{

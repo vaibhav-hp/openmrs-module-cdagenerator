@@ -12,13 +12,7 @@ background-color:Azure ;
 function getType()
 {
 	var x=document.getElementById("cda_profile_type").value;
-	alert('----->'+x);
-	
-	
 	document.getElementById("ChildCDAHandler").value=x;
-   
-   
-	
 }
 </script>
 <h4>
@@ -42,14 +36,8 @@ function getType()
 <c:forEach var="ls" items="${ListCdatypes}">
 			<option value="${ls}">${ls.documentFullName}(${ls.documentShortName})</option>
 			
-			<c:set var="obj" scope="session" value="${}"/>
-		</c:forEach>
+</c:forEach>
 </select>
-<!--  <input type="hidden" id="documentFullName" name="documentFullName"/>	
- <input type="hidden" id="documentShortName" name="documentShortName"/> 
-<input type="hidden" id="documentDescription" name="documentDescription"/>
-<input type="hidden" id="templateid" name="templateid"/>
-<input type="hidden" id="formatCode" name="formatCode"/>	-->
 <input type="hidden" id="ChildCDAHandler" name="ChildCDAHandler"/>
 </div>
 </br>
